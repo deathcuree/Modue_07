@@ -1,27 +1,26 @@
 <?php
-// Create variable names for easy use.
-$host = 'localhost';
-$dbname = 'ucbr_db';
-$user = 'root';
-$pass = '';
+class DatabaseConnection
+{
+    private $pdo;
 
-try {
-    // Create a PDO connection. This is the default syntax.
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
-
-    // Set the PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Check the connection status is ok
-    if ($pdo) {
-        return "Connected successfully";
-    } else {
-        return ["database" => "Failed to insert data into the database."];
+    public function __construct($host, $dbname, $user, $pass)
+    {
+        try {
+            $this->pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            throw new Exception("Database error: " . $e->getMessage());
+        }
     }
-} catch (PDOException $e) {
-    // Log database error
-    error_log("Database error: " . $e->getMessage());
 
-    // Return error message
-    return ["database" => "Database error: " . $e->getMessage()];
+    public function getPDO()
+    {
+        return $this->pdo;
+    }
+
+    public function closeConnection()
+    {
+        $this->pdo = null;
+    }
 }
