@@ -1,1 +1,1 @@
-will update this code from time to time.
+UCBR update. OOP style and PDO connection. 

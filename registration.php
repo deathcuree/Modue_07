@@ -1,7 +1,6 @@
 <?php
 // Include your database connection file or create a PDO connection here
 include('connection.php');
-// $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
 
 // Initialize variables
 $registrationErrors = [];

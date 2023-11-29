@@ -90,59 +90,21 @@ class UserRegistration
             if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $password)) {
                 $registrationErrors['password'] = "Password should contain at least one uppercase letter, one lowercase letter, and one number.";
             }
-
-            // Check repeat password
-            if ($password !== $repeatPassword) {
-                $registrationErrors['repeatPassword'] = "Passwords do not match.";
-            }
         }
 
         return $registrationErrors;
     }
 
-    // private function validateInput($fullname, $email, $password, $repeatPassword)
-    // {
-    //     $registrationErrors = [];
+    private function validateRepeatPassword($password, $repeatPassword)
+    {
+        $registrationErrors = [];
 
-    //     // You can add more validation rules based on your requirements
-    //     if (empty($fullname)) {
-    //         $registrationErrors['fullname'] = "Full name is required.";
-    //     }
+        if ($password !== $repeatPassword) {
+            $registrationErrors['repeat_password'] = "Passwords do not match.";
+        }
 
-    //     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    //         $registrationErrors['email'] = "Valid email is required.";
-    //     }
-
-    //     if ($password !== $repeatPassword) {
-    //         $registrationErrors['repeat_password'] = "Passwords do not match.";
-    //     }
-
-    //     return $registrationErrors;
-    // }
-
-    // private function validateInput($fullname, $email, $password, $repeatPassword)
-    // {
-    //     $registrationErrors = [];
-
-    //     // You can add more validation rules based on your requirements
-    //     if (empty($fullname)) {
-    //         $registrationErrors['fullname'] = "Full name is required.";
-    //     }
-
-    //     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    //         $registrationErrors['email'] = "Valid email is required.";
-    //     }
-
-    //     if (empty($password) || strlen($password) < 12) {
-    //         $registrationErrors['password'] = "Password must be at least 12 characters long.";
-    //     }
-
-    //     if ($password !== $repeatPassword) {
-    //         $registrationErrors['repeat_password'] = "Passwords do not match.";
-    //     }
-
-    //     return $registrationErrors;
-    // }
+        return $registrationErrors;
+    }
 
     // Register user using the variables that were used in checking if there is a form submitted
     public function registerUser($fullname, $email, $password, $repeatPassword)
@@ -155,6 +117,11 @@ class UserRegistration
             return array_merge($registrationErrors, $fullnameErrors);
         }
 
+        // Check if the fullname already exists
+        if ($this->fullNameExists($fullname)) {
+            return ["fullname" => "This full name is already registered."];
+        }
+
         // Check if the email already exists
         if ($this->emailExists($email)) {
             return ["email" => "This email is already registered."];
@@ -164,6 +131,12 @@ class UserRegistration
         $passwordErrors = $this->validatePassword($password, $repeatPassword);
         if (!empty($passwordErrors)) {
             return $passwordErrors;
+        }
+
+        // Check if the repeat password is valid
+        $passwordRepeatErrors = $this->validateRepeatPassword($password, $repeatPassword);
+        if (!empty($passwordRepeatErrors)) {
+            return $passwordRepeatErrors;
         }
 
         try {
