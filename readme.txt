@@ -1,1 +1,1 @@
-UCBR update. OOP style and PDO connection. 
+Jahnai Boarding Home Website. Draft. OOP style and PDO connection. 

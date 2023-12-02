@@ -159,7 +159,7 @@ session_start();
         });
 
         $('#successModal').on('hidden.bs.modal', function() {
-            window.location.href = 'dashboard.php';
+            window.location.href = 'tenant/dashboard.php';
         });
     });
 </script>
